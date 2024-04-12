@@ -1,5 +1,6 @@
 const http = require('http');
 const fs = require('fs');
+let temp;
 
 
 
@@ -12,14 +13,29 @@ const server = http.createServer((req, res)=>{
         res.write('<html>');
 
         res.write('<head><title>Enter Message</title><head>');
-        res.write('<body><form action = "/message" method = "POST"><input type= "text"><button type = "submit">Send</button></form></body>');
+        
+        res.write(`<body><h1>${temp}</h1><br><form action = "/message" method = "POST"><input type= "text" name = "message"><button type = "submit">Send</button></form></body>`);
+        
         res.write('</html>');
     
         return res.end();
     }
 
     if(url === '/message' && method === 'POST'){
-        fs.writeFileSync('message.txt',"DuMMY");
+        const body=[];
+        req.on('data', (chunk)=>{
+            console.log(chunk);
+            body.push(chunk);
+        })
+        req.on('end',()=>{
+            const parsebody = Buffer.concat(body).toString();
+            const msg = parsebody.split('=')[1];
+            console.log(parsebody);
+            fs.writeFileSync('message.txt',msg);
+            temp = msg;
+            
+        })
+        
         res.statusCode = 302;
         res.setHeader('Location','/');
         return res.end();
