@@ -1,10 +1,10 @@
 const express = require('express');
-
+const path = require('path')
 const router = express.Router();
+const rootDIr =require('../util/path')
 
 router.use('',(req,res,next)=>{
-    console.log("in the  another middleware");
-    res.send('<h1>Hello yash  from express</h1>');
+   res.sendFile(path.join(rootDIr,'views','shop.html'));
 })
 
 
