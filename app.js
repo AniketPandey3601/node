@@ -1,7 +1,8 @@
 const http = require('http');
-const path = require('path');
+const path = require('path')
 const express = require('express');
 const app = express();
+const errorcontroller = require('./controllers/error')
 
 const adminRoutes = require('./routes/admin.js');
 const shoproutes = require('./routes/shop');
@@ -24,10 +25,7 @@ app.use('/contactus',(req,res,next)=>{
     res.send(`<form method ="POST">Name:<input type=text > <br><br> Email:<input type="email"></form>`)
 })
 
-app.use((req,res,next)=>{
-
-    res.status(404).sendFile(path.join(__dirname ,  'views' , '404.html'))
-})
+app.use(errorcontroller.e404error)
 
 
 
