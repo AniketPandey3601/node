@@ -20,6 +20,18 @@ exports.postaddproducts = (req,res,next)=>{
     const product = new Product(req.body.title)
     product.save();
     res.redirect('/')
+    Product.create({
+
+        title:title,
+      
+    }).then(result=>{
+
+        console.log(result)
+    })
+    .catch(err=>{
+
+        console.log(err);
+    })
    
 }
 

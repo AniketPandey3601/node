@@ -9,7 +9,8 @@ const adminRoutes = require('./routes/admin.js');
 const shoproutes = require('./routes/shop');
 
 const bodyParser = require('body-parser')
-
+const User = require('./models/user')
+const Product = require('./models/product')
 
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(express.static(path.join(__dirname+'/public')))
@@ -27,10 +28,34 @@ app.use('/contactus',(req,res,next)=>{
     res.send(`<form method ="POST">Name:<input type=text > <br><br> Email:<input type="email"></form>`)
 })
 
+app.use((req,res,next)=>{
+
+    User.findByPk(1).then(user=>{
+        req.user = user;
+        next();
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+})
+
 app.use(errorcontroller.e404error)
 
+Product.belongsTo(User , {constraints:true , onDelete:'CASCADE'})
+User.hasMany(Product);
 
-sequelize.sync().then(result=>{
+sequelize.sync({force:true}).then(result=>{
+    return User.findByPk(1);
+    
+})
+.then(user=>{
+    if(!user){
+
+       return  User.create({id:1 , name:'max',email:'test@test.com'})
+    }
+    return user;
+}).then(result=>{
+
     console.log(result);
     app.listen(3000)
 })
