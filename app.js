@@ -11,6 +11,8 @@ const shoproutes = require('./routes/shop');
 const bodyParser = require('body-parser')
 const User = require('./models/user')
 const Product = require('./models/product')
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(express.static(path.join(__dirname+'/public')))
@@ -43,6 +45,10 @@ app.use(errorcontroller.e404error)
 
 Product.belongsTo(User , {constraints:true , onDelete:'CASCADE'})
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize.sync({force:true}).then(result=>{
     return User.findByPk(1);
