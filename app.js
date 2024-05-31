@@ -72,8 +72,6 @@ sequelize.sync({force:true}).then(result=>{
 
 
 
-
-
-app.listen(4000);
-
- 
+mongoConnect(() => {
+    app.listen(3000);
+  });
